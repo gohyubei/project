@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Wet Markets in Singapore — Interactive Presentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+  <style>
+    html, body { height: 100%; scroll-behavior: smooth; }
+    .slide { min-height: 100vh; display: none; place-items: center; padding: 4rem 1rem; }
+    .active { display: grid; }
+    .fade { animation: fadeIn 1s ease forwards; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(30px);} to { opacity: 1; transform: translateY(0); opacity: 1; }}
+  .hero-anim{background:linear-gradient(120deg,#0f766e,#14b8a6,#0ea5e9);background-size:200% 200%;animation:gradientShift 10s ease infinite;color:#fff}
+@keyframes gradientShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.leaflet-tile-pane { filter: hue-rotate(165deg) saturate(1.1) brightness(0.95); }
+/* Map iFrame sizing */
+#originalMapFrame { height: calc(100vh
+.map-overlay input { border:1px solid #ddd; border-radius:8px; padding:6px 8px; min-width:260px; }
+.leaflet-control-custom a{ display:block; text-align:center; text-decoration:none; font-weight:700; color:#138e97; background:#fff; border-bottom:1px solid #ccc; font-size:18px; line-height:26px; width:28px; height:28px; cursor:pointer; }
+.leaflet-top.leaflet-right .leaflet-control.leaflet-control-custom{ margin-top:60px; }
+.leaflet-control-custom a:last-child{ border-bottom:none; }
+.leaflet-control-custom a:hover{ background:#138e97; color:#fff; }
+</style>
+  <!-- Leaflet + helpers for the map slide -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+</head>
+<body class="font-[Inter] bg-white text-gray-800" x-data="deck()" @keydown.window="onKey($event)">
+  <header class="fixed top-0 w-full bg-white/70 backdrop-blur-md border-b border-gray-200 z-50">
+    <div class="max-w-6xl mx-auto flex justify-between items-center p-4">
+      <h1 class="font-extrabold text-teal-700 text-xl">PASAR: Wet Markets in Singapore</h1>
+      <div class="text-sm text-gray-500">Slide <span x-text="i+1"></span>/<span x-text="slides.length"></span></div>
+    </div>
+    <div class="h-1 bg-gray-200"><div class="h-1 bg-teal-600 transition-all" :style="`width:${((i+1)/slides.length)*100}%`"></div></div>
+  </header>
+
+  <main>
+    <!-- Cover Slide with Background Image -->
+<section class="slide active relative bg-cover bg-center" style="background-image: url('Background.jpg');">
+  <!-- Overlay for opacity and gradient harmony -->
+  <div class="absolute inset-0 bg-gradient-to-tr from-teal-800/70 via-teal-600/60 to-sky-500/50"></div>
+  
+  <div class="relative z-10 max-w-4xl mx-auto text-center text-white">
+    <h1 class="text-6xl md:text-7xl font-extrabold tracking-tight drop-shadow-lg">PASAR</h1>
+    <p class="text-2xl md:text-3xl mt-2 font-semibold">Wet Markets in Singapore</p>
+    <p class="mt-6 text-lg drop-shadow-md"><span id="typed"></span></p>
+  </div>
+</section>
+    <!-- Slide 1: What is a Wet Market -->
+    <section class="slide" x-init="animateText($el)">
+      <div class="max-w-3xl text-center fade">
+        <h2 class="text-5xl font-extrabold text-teal-700 mb-6">What is a Wet Market?</h2>
+        <ul class="text-lg space-y-4 text-gray-700 text-left">
+          <li>• Wet markets have existed in Singapore since <strong>1825</strong>.</li>
+          <li>• In the early decades of Singapore’s independence, the government re-housed city squatters into <strong>high-rise HDB estates</strong>, planning pasar and hawker centres to meet residents’ daily needs.</li>
+          <li>• The term “wet” comes from <strong>melted ice and frequent washing</strong> — stalls keep seafood fresh and floors clean.</li>
+          <li>• Divided into <strong>wet sections</strong> (fresh produce, fish, meat) and <strong>dry sections</strong> (spices, rice, beans, dried goods).</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Slide 2: What Makes Wet Markets Unique -->
+    <section class="slide">
+      <div class="max-w-4xl text-center fade">
+        <h2 class="text-5xl font-extrabold text-teal-700 mb-8">What Makes Wet Markets Unique in Singapore?</h2>
+        <div class="grid md:grid-cols-2 gap-6 text-left">
+          <div class="p-6 rounded-2xl border shadow hover:shadow-lg transition">
+            <h3 class="font-bold text-xl">1. Community Experience 🤝</h3>
+            <p class="mt-2">Wide range of fresh meats and vegetables at affordable, often <em>bargainable</em> prices. Regular customers enjoy friendly, personalized service from long-time stallholders.</p>
+          </div>
+          <div class="p-6 rounded-2xl border shadow hover:shadow-lg transition">
+            <h3 class="font-bold text-xl">2. Sensory Immersion 👃🎶</h3>
+            <p class="mt-2">The morning bustle—scents of fish and meat mixing with curry powder and flowers—creates a symphony of sights, sounds, and smells unique to Singapore.</p>
+          </div>
+          <div class="p-6 rounded-2xl border shadow hover:shadow-lg transition">
+            <h3 class="font-bold text-xl">3. Multicultural Harmony 🌏</h3>
+            <p class="mt-2">A Malay stall selling mutton beside a Chinese stall selling vegetables or an Indian stall with spices — markets mirror Singapore’s diverse society.</p>
+          </div>
+          <div class="p-6 rounded-2xl border shadow hover:shadow-lg transition">
+            <h3 class="font-bold text-xl">4. Shared Nostalgia ❤️</h3>
+            <p class="mt-2">Wet markets embody memories and friendships across generations — spaces where neighbours mingle and connect beyond transactions.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 3: Current Situation -->
+    <section class="slide">
+      <div class="max-w-4xl text-center fade">
+        <h2 class="text-5xl font-extrabold text-teal-700 mb-6">Current Situation</h2>
+        <p class="text-lg text-gray-700 mb-4">Wet markets have become integral to HDB neighbourhoods, evolving alongside urban life.</p>
+        <ul class="text-left text-lg space-y-3">
+          <li>• The heart of each estate once centred around its <strong>wet market</strong>.</li>
+          <li>• Upgraded with better lighting, ventilation, and drainage—today’s markets are <strong>bright, clean, and accessible</strong>.</li>
+          <li>• Example: <strong>Tiong Bahru Market</strong> — a modern, wheelchair-friendly, two-storey landmark blending tradition with comfort.</li>
+          <li>• Wet markets coexist with <strong>supermarkets and online grocers</strong>, maintaining their charm through freshness, variety, and human touch.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Slide 4: Challenges -->
+    <section class="slide">
+      <div class="max-w-4xl text-center fade">
+        <h2 class="text-5xl font-extrabold text-teal-700 mb-8">Challenges Facing Wet Markets</h2>
+        <div class="grid md:grid-cols-2 gap-6 text-left">
+          <div class="p-6 rounded-2xl border shadow hover:shadow-lg transition">
+            <h3 class="font-bold text-xl">Competition 🛒</h3>
+            <p class="mt-2">Since the 1980s, supermarkets and hypermarts have drawn customers with air-conditioned comfort, extended hours, and wider product ranges. Stallholders’ earnings have fallen by nearly 70% in some areas.</p>
+          </div>
+          <div class="p-6 rounded-2xl border shadow hover:shadow-lg transition">
+            <h3 class="font-bold text-xl">Declining Visits 📉</h3>
+            <p class="mt-2">A 2018 NEA survey found that <strong>39% of Singaporeans hadn’t visited a wet market</strong> in a year — a steady increase from 23% in 2014.</p>
+          </div>
+          <div class="p-6 rounded-2xl border shadow hover:shadow-lg transition">
+            <h3 class="font-bold text-xl">Stagnant Development 🏗️</h3>
+            <p class="mt-2">The last traditional wet markets with hawker centres were built in <strong>1984</strong>. Although more were planned in 2011, few have materialized.</p>
+          </div>
+          <div class="p-6 rounded-2xl border shadow hover:shadow-lg transition">
+            <h3 class="font-bold text-xl">Changing Lifestyles ⏰</h3>
+            <p class="mt-2">As working professionals prefer evening shopping, the early-morning rhythm of pasar life faces gradual decline.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+      
+    <!-- Final Slide: Full-screen Interactive Map (Original Map via iFrame) -->
+    <section class="slide">
+      <div class="w-full h-full flex flex-col">
+        <div class="flex-1 px-4 pb-6">
+          <iframe id="originalMapFrame" title="Original Map" class="w-full h-full rounded-2xl border shadow" loading="lazy" referrerpolicy="no-referrer" sandbox="allow-scripts allow-same-origin allow-forms" data-src="index.html"></iframe>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="fixed bottom-6 left-0 right-0 flex justify-center gap-3">
+    <button @click="prev()" class="px-5 py-2 bg-white border rounded-xl shadow hover:border-teal-600">◀ Prev</button>
+    <button @click="next()" class="px-5 py-2 bg-teal-700 text-white rounded-xl shadow hover:bg-teal-600">Next ▶</button>
+  </div>
+
+  <script>
+    function deck(){
+      return {
+        i:0, slides:[],
+        init(){ this.slides = [...document.querySelectorAll('.slide')]; this.show(0); },
+        show(idx){ this.i=Math.max(0,Math.min(idx,this.slides.length-1)); this.slides.forEach((s,j)=>s.classList.toggle('active',j===this.i));
+          // Lazy-init map on last slide
+          // Lazy-load the original map only when we reach the last slide
+          if (this.i === this.slides.length-1 && !window.__mapIframeLoaded){
+            const f = document.getElementById('originalMapFrame');
+            if (f && !f.src){ f.src = f.dataset.src; }
+            window.__mapIframeLoaded = true;
+          }
+        },
+        next(){ this.show(this.i+1); }, prev(){ this.show(this.i-1); },
+        onKey(e){ if(['ArrowRight',' '].includes(e.key))this.next(); if(['ArrowLeft','Backspace'].includes(e.key))this.prev(); }
+      }
+    }
+
+    // --- Final slide map (keeps original-style controls & search)
+    function initDeckMap(){
+      window.__deckMapInit = true;
+      const homeView = { center: [1.3521, 103.8198], zoom: 12 };
+      const map = L.map('deckMap', { zoomControl: false }).setView(homeView.center, homeView.zoom);
+      L.tileLayer('https://cartodb-basemaps-a.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png', { maxZoom: 13, attribution: '&copy; CARTO, &copy; OpenStreetMap contributors' }).addTo(map);
+
+      // Custom zoom control (+, −, reset) with + capped to +2 from home zoom
+      const CustomZoom = L.Control.extend({ options:{ position:'topright' }, onAdd:function(map){
+          const c=L.DomUtil.create('div','leaflet-bar leaflet-control leaflet-control-custom');
+          const zIn=L.DomUtil.create('a','',c); zIn.innerHTML='+'; zIn.title='Zoom in'; zIn.href='#';
+          const zOut=L.DomUtil.create('a','',c); zOut.innerHTML='−'; zOut.title='Zoom out'; zOut.href='#';
+          const reset=L.DomUtil.create('a','',c); reset.innerHTML='⟳'; reset.title='Reset view'; reset.href='#';
+          L.DomEvent.disableClickPropagation(c);
+          const hardMax=homeView.zoom+2; const getAllowedMax=()=>{ const mz=map.getMaxZoom(); return Number.isFinite(mz)?Math.min(mz,hardMax):hardMax; };
+          function update(){ (map.getZoom()>=getAllowedMax()) ? zIn.classList.add('disabled') : zIn.classList.remove('disabled'); }
+          zIn.onclick=(e)=>{e.preventDefault(); if(map.getZoom()<getAllowedMax()) map.zoomIn();};
+          zOut.onclick=(e)=>{e.preventDefault(); map.zoomOut();};
+          reset.onclick=(e)=>{e.preventDefault(); map.setView(homeView.center, homeView.zoom);};
+          map.on('zoomend', update); update(); return c; }
+      });
+      map.addControl(new CustomZoom());
+
+      // --- Market data (edit/extend) — mirrors your earlier deck style
+      const MARKET_DATA = [
+        { name: 'Tekka Centre Market', category: 'Mixed', lat: 1.3066, lng: 103.8503, blurb: 'Little India market with produce, spices and hawker centre.', hours: '6am–1pm', addr:'Bukit Timah Rd' },
+        { name: 'Chinatown Complex Market', category: 'Mixed', lat: 1.2835, lng: 103.8443, blurb: 'Large market for seafood, meats and dry goods.', hours: '7am–2pm', addr:'Smith St' },
+        { name: 'Tiong Bahru Market', category: 'Produce', lat: 1.2859, lng: 103.8333, blurb: 'Modernised market; popular breakfast spot.', hours: '6am–1pm', addr:'Seng Poh Rd' },
+        { name: 'Geylang Serai Market', category: 'Mixed', lat: 1.3180, lng: 103.8943, blurb: 'Malay heritage market with specialty ingredients.', hours: '6am–1pm', addr:'Joo Chiat Rd' }
+      ];
+
+      const markersLayer = L.layerGroup().addTo(map);
+      const markers = MARKET_DATA.map(d=>{
+        const m = L.marker([d.lat, d.lng]).bindTooltip(`<div class="tt-wrap"><div class="tt-location">${d.name}</div><div>${d.addr||''}</div></div>`, {direction:'top', className:'market-tt'});
+        m.bindPopup(`<div style="min-width:220px">
+          <div style="font-weight:700; font-size:14px; margin-bottom:4px">${d.name}</div>
+          <div style="font-size:12px; color:#475569">${d.blurb}</div>
+          <div style="font-size:12px; margin-top:6px"><strong>Hours:</strong> ${d.hours} • <span style="background:#14b8a61a; padding:2px 6px; border-radius:999px">${d.category}</span></div>
+        </div>`);
+        markersLayer.addLayer(m); return { m, d };
+      });
+
+      // Search filter (name/address contains)
+      const $q = document.getElementById('deckSearch');
+      function applyFilter(){
+        const q = ($q.value||'').toLowerCase().trim();
+        markers.forEach(({m,d})=>{
+          const ok = !q || (d.name.toLowerCase().includes(q) || (d.addr||'').toLowerCase().includes(q));
+          if (ok) { if(!markersLayer.hasLayer(m)) markersLayer.addLayer(m); }
+          else { if(markersLayer.hasLayer(m)) markersLayer.removeLayer(m); }
+        });
+      }
+      $q.addEventListener('input', applyFilter);
+    }
+  </script>
+<script>
+  function startTyped(){
+    if (window.__typedStarted) return;
+    var el = document.getElementById('typed');
+    if (!el) return;
+    new Typed('#typed', {
+      strings: ['Tradition • Community • Culture','Freshness • Community • Heritage'],
+      typeSpeed: 40,
+      backSpeed: 20,
+      backDelay: 1500,
+      loop: true
+    });
+    window.__typedStarted = true;
+  }
+  document.addEventListener('DOMContentLoaded', startTyped);
+</script>
+</body>
+</html>
